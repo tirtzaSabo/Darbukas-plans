@@ -19,9 +19,9 @@
 //         userService.getAllUsers(req, res)
 //     });
 // }
-const User = require('../models/User'); // Assuming your user model is defined in models/User.js
+const User = require('../models/user.model'); // Assuming your user model is defined in models/User.js
 
-const userService = require('../services/userService');
+const userService = require('../services/user.service');
 
 // Controller methods for User CRUD operations
 exports.getAllUsers = async (req, res) => {
