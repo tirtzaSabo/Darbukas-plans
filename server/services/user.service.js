@@ -1,5 +1,4 @@
 const userModel = require('../models/user.model')
-
 exports.signup =async(req,res) =>{
     try {
         const { name,phone, email, password, user_id } = req.body;
@@ -52,7 +51,7 @@ exports.signup =async(req,res) =>{
         console.log(err);
     }
  }
- const User = require('../models/User');
+ const User = require('../models/user.model');
 
 // Service methods for User CRUD operations
 exports.getAllUsers = async () => {
@@ -72,5 +71,5 @@ exports.deleteUser = async (id) => {
 };
 
 
-module.exports.addUser=addUser;
-module.exports.signin=signin;
+// module.exports.addUser;
+// module.exports.signin;

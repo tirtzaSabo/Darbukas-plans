@@ -1,6 +1,8 @@
 require('dotenv').config()
 const userRoutes = require('./routers/user.router');
 const serviceRoutes = require('./routers/service.router');
+const businessRoutes = require('./routers/business.router');
+const eventRoutes = require('./routers/event.router');
 const express = require('express');
 const app = express();
 
