@@ -1,4 +1,4 @@
-const Service = require('../models/Service');
+const Service = require('../models/service.model');
 
 // Service methods for Service CRUD operations
 exports.getAllServices = async () => {

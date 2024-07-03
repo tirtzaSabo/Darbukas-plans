@@ -1,4 +1,4 @@
-const mongoose = require("./db")
+const mongoose = require("./db.model")
 const Schema = mongoose.Schema;
 const EventModelSchema = new Schema({
     date:Date,
