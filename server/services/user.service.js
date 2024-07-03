@@ -1,13 +1,11 @@
 const userModel = require('../models/user.model')
 
-const addUser =async(req,res) =>{
+exports.signup =async(req,res) =>{
     try {
         const { name,phone, email, password, user_id } = req.body;
         if (!(email && password && name && phone && user_id)) {
             res.status(400).send("All input is required");
         }
-       
-  
         let oldUser; 
         await exists({email:email}).then(res=>{oldUser=res});
         if (oldUser) {
@@ -27,7 +25,7 @@ const addUser =async(req,res) =>{
     }
 
 }
- const signin = async (req,res) =>{
+ exports.signin = async (req,res) =>{
     try {
         const { email, password } = req.body;
         if (!(email && password)) {
@@ -54,13 +52,25 @@ const addUser =async(req,res) =>{
         console.log(err);
     }
  }
-const requiredInputs =(user)=>{
-    const { name,phone, email, password, user_id } = user;
+ const User = require('../models/User');
 
-    if (!(email && password && name && phone && user_id)) {
-        return false;
-    }
-}
+// Service methods for User CRUD operations
+exports.getAllUsers = async () => {
+  return await User.find();
+};
+
+exports.getUserById = async (id) => {
+  return await User.findById(id);
+};
+
+exports.updateUser = async (id, userData) => {
+  return await User.findByIdAndUpdate(id, userData, { new: true });
+};
+
+exports.deleteUser = async (id) => {
+  return await User.findByIdAndDelete(id);
+};
+
 
 module.exports.addUser=addUser;
 module.exports.signin=signin;
