@@ -1,23 +1,56 @@
-const { Router } = require('express');
-const app = Router();
-const fs = require('fs').promises;
-const bcryptjs = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { User } = require('../models/user');
-const userModel = require('../models/userModel');
-const userService = require('../services/user.service')
+const eventService = require('../services/event.service');
 
-let Users = async function () {
+// Controller methods for Event CRUD operations
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await eventService.getAllEvents();
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
+exports.getEventById = async (req, res) => {
+  try {
+    const event = await eventService.getEventById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    res.status(200).json(event);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-    app.post("/signup", async (req, res) => { userService.addUser(req, res) })
+exports.createEvent = async (req, res) => {
+  try {
+    const newEvent = await eventService.createEvent(req.body);
+    res.status(201).json(newEvent);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 
+exports.updateEvent = async (req, res) => {
+  try {
+    const updatedEvent = await eventService.updateEvent(req.params.id, req.body);
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    res.status(200).json(updatedEvent);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 
-
-    app.post("/signin", async (req, res) => {
-        userService.signin(req, res)
-    });
-
-}
-Users();
-module.exports = app;
+exports.deleteEvent = async (req, res) => {
+  try {
+    const deletedEvent = await eventService.deleteEvent(req.params.id);
+    if (!deletedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
