@@ -1,15 +1,19 @@
 require('dotenv').config()
-const userRoutes = require('./routers/user.router');
-const serviceRoutes = require('./routers/service.router');
-const businessRoutes = require('./routers/business.router');
-const eventRoutes = require('./routers/event.router');
+const { swaggerUi, specs } = require('./swaggerConfig'); 
+
+// const { swaggerUi, swaggerSpec } = require('./swaggerConfig');
+const userRoutes = require('./routes/user.router');
+const serviceRoutes = require('./routes/service.router');
+const businessRoutes = require('./routes/business.router');
+const eventRoutes = require('./routes/event.router');
 const express = require('express');
 const app = express();
-
 const port = process.env.PORT || 4000;
+app.use('/api', swaggerUi.serve, swaggerUi.setup(specs));
+// app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/users',userRoutes );
 app.use('/services', serviceRoutes);
-app.use('/businesses',businessRoutes);
+app.use('/business',businessRoutes);
 app.use('/events', eventRoutes);
 
 
