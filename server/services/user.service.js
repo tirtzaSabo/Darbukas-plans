@@ -1,8 +1,8 @@
 const userModel = require('../models/user.model')
 exports.signup =async(req,res) =>{
     try {
-        const { name,phone, email, password, user_id } = req.body;
-        if (!(email && password && name && phone && user_id)) {
+        const { name,phone, email, password } = req.body;
+        if (!(email && password && name && phone )) {
             res.status(400).send("All input is required");
         }
         let oldUser; 
@@ -11,12 +11,12 @@ exports.signup =async(req,res) =>{
             return res.status(409).send("User Already Exist. Please ")
         }
         const encryptedPassword = await hash(password, 10);
-        const token = sign({ user_id: user_id, email },
+        const token = sign({email:email },
             "" + process.env.TOKEN_KEY, {
                 expiresIn: "2h",
             }
         );
-        const user = new userModel({name:name,phone:phone, email:email, password:encryptedPassword, user_id:user_id,token:token});
+        const user = new userModel({name:name,phone:phone, email:email, password:encryptedPassword,token:token});
         user.save();
         res.status(201).json(user);
     } catch (err) {
