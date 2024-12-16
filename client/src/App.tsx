@@ -33,14 +33,14 @@
 // }
 
 // export default App
-import React from 'react';
-import BusinessDetails from './components/admin/BusinessDetails.component.tsx';
+
+import { Outlet } from 'react-router-dom';
+import Header from './components/userArea/Header.component';
 
 function App() {
   return (
     <div className="App">
-      <BusinessDetails />
-    </div>
+<Header></Header>    </div>
   );
 }
 

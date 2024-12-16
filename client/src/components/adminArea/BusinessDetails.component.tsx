@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import Axios from '../../services/axios';
 // import './BusinessDetails.css';
 
 interface Business {
@@ -15,7 +15,7 @@ const BusinessDetails: React.FC = () => {
   useEffect(() => {
     const fetchBusiness = async () => {
       try {
-        const response = await axios.get('/api/businesses/your-business-id'); // Replace with the actual business ID or logic to get it
+        const response = await Axios.get('/api/businesses/your-business-id'); // Replace with the actual business ID or logic to get it
         setBusiness(response.data);
       } catch (error) {
         console.error('Error fetching business details:', error);
@@ -35,11 +35,11 @@ const BusinessDetails: React.FC = () => {
       <p>שם העסק: {business.name}</p>
       <p>כתובת: {business.address}</p>
       <h3>דרכי התקשרות</h3>
-      <ul>
+      {/* <ul>
         {business.contactMethods.map((contact, index) => (
           <li key={index}>{contact}</li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };
