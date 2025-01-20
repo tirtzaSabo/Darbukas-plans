@@ -1,4 +1,6 @@
 const userModel = require('../models/user.model')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 exports.signup =async(req,res) =>{
     try {
         const { name,phone, email, password } = req.body;
@@ -6,19 +8,20 @@ exports.signup =async(req,res) =>{
             res.status(400).send("All input is required");
         }
         let oldUser; 
-        await exists({email:email}).then(res=>{oldUser=res});
+        await userModel.exists({email:email}).then(res=>{oldUser=res});
         if (oldUser) {
             return res.status(409).send("User Already Exist. Please ")
         }
-        const encryptedPassword = await hash(password, 10);
-        const token = sign({email:email },
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const token = jwt.sign({email:email },
             "" + process.env.TOKEN_KEY, {
                 expiresIn: "2h",
             }
         );
         const user = new userModel({name:name,phone:phone, email:email, password:encryptedPassword,token:token});
-        user.save();
-        res.status(201).json(user);
+        
+        await user.save();
+        return user;
     } catch (err) {
         console.log(err);
     }
@@ -35,7 +38,7 @@ exports.signup =async(req,res) =>{
         if (!user) {
             return res.status(409).send("User is not exists")
         }
-        if (user && (await bcryptjs.compare(password, user.password))) {
+        if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign({ user_id: user._id, email },
                 " " + process.env.TOKEN_KEY, {
                 expiresIn: "2h",
