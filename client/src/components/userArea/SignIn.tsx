@@ -23,28 +23,28 @@ const SignIn: React.FC = () => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const cookies = new Cookies();
-        const name = data.get('name') as string;
+        const email = data.get('email') as string;
         const password = data.get('password') as string;
 
         try {
-            const res = await Axios.post(`${config.api}/user/signin`, { name, password });
+            const res = await Axios.post(`${config.api}/users/signin`, { email, password });
 
             if (res.status === 200) {
-                const { manager, name } = res.data;
+                const {email } = res.data;
 
                 if (!res.data) {
-                    alert('Name or password is incorrect');
+                    alert('Email or password is incorrect');
                     return;
                 }
 
-                cookies.set('isAdmin', manager ? 'true' : 'false');
-                cookies.set('name', name);
+                // cookies.set('isAdmin', manager ? 'true' : 'false');
+                cookies.set('email', email);
 
-                if (manager) {
-                    nav('/admin');
-                } else {
-                    nav('/');
-                }
+                // if (manager) {
+                //     nav('/admin');
+                // } else {
+                //     nav('/');
+                // }
             }
         } catch (error) {
             console.error('Error signing in:', error);
@@ -74,10 +74,11 @@ const SignIn: React.FC = () => {
                             margin="normal"
                             required
                             fullWidth
-                            id="name"
-                            label="שם"
-                            name="name"
-                            autoComplete="name"
+                            id="email"
+                            label="מייל"
+                            type="email"
+                            name="email"
+                            autoComplete="email"
                             autoFocus
                         />
                         <TextField
@@ -94,6 +95,7 @@ const SignIn: React.FC = () => {
                             control={<Checkbox value="remember" color="primary" />}
                             label="זכור אותי"
                         />
+                        <a href='/signup'>הרשם</a>
                         <Button
                             type="submit"
                             fullWidth
