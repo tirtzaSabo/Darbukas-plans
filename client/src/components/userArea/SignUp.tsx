@@ -25,11 +25,15 @@ const SignUp: React.FC = () => {
         const cookies = new Cookies();
         const name = data.get('name') as string;
         const password = data.get('password') as string;
-
+        const phone = data.get('phone') as string;
+        const email = data.get('email') as string;
         try {
-            const res = await Axios.post(`${config.api}/user/signin`, { name, password });
+            const res = await Axios.post(`${config.api}/users/signup`, { name, password, phone, email });
+            console.log(res.status);
 
             if (res.status === 200) {
+                console.log("200");
+
                 const { manager, name } = res.data;
 
                 if (!res.data) {
@@ -48,13 +52,12 @@ const SignUp: React.FC = () => {
             }
         } catch (error) {
             console.error('Error signing in:', error);
-            alert('An error occurred during sign in. Please try again.');
         }
     };
 
     return (
         <>
-         {/* <ThemeProvider theme={defaultTheme}> */}
+            {/* <ThemeProvider theme={defaultTheme}> */}
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -80,7 +83,7 @@ const SignUp: React.FC = () => {
                             autoComplete="name"
                             autoFocus
                         />
-                         <TextField
+                        <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -90,15 +93,15 @@ const SignUp: React.FC = () => {
                             id="email"
                             autoComplete="email"
                         />
-                         <TextField
+                        <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="telephon"
+                            name="phone"
                             label="טלפון"
                             type="tel"
-                            id="telephon"
-                            autoComplete="telephon"
+                            id="phone"
+                            autoComplete="phone"
                         />
                         <TextField
                             margin="normal"
@@ -114,6 +117,10 @@ const SignUp: React.FC = () => {
                             control={<Checkbox value="remember" color="primary" />}
                             label="זכור אותי"
                         />
+                        <FormControlLabel
+                                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                                label="I want to receive inspiration, marketing promotions and updates via email."
+                            />
                         <Button
                             type="submit"
                             fullWidth
@@ -125,7 +132,7 @@ const SignUp: React.FC = () => {
                     </Box>
                 </Box>
             </Container>
-        {/* </ThemeProvider> */}
+            {/* </ThemeProvider> */}
         </>
     );
 };

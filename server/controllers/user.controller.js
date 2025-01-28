@@ -46,7 +46,8 @@ exports.getUserById = async (req, res) => {
 
 exports.signup = async (req, res) => {
   try {
-    const newUser = await userService.signup(req.body);
+    console.log('Signup request body:', req.body); // בדיקת גוף הבקשה
+    const newUser = await userService.signup(req,res);
     res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -54,7 +55,7 @@ exports.signup = async (req, res) => {
 };
 exports.signin = async (req, res) => {
   try {
-    const newUser = await userService.signin(req.body);
+    const newUser = await userService.signin(req,res);
     res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ message: err.message });

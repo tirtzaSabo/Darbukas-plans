@@ -85,6 +85,7 @@ import '../../App.css';
 import React from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Profile from './Profile.component';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -95,16 +96,20 @@ const Header: React.FC = () => {
   return (
     <>
       <header>
-        <nav>
+        
+        <nav 
+         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+          backgroundColor: '#ffffff',
+          display:'flex',
+          justifyContent:'center'
+        }}>
+          <div>
           <BottomNavigation
-            sx={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 999,
-              backgroundColor: '#ffffff',
-            }}
             showLabels
           >
             <BottomNavigationAction
@@ -128,10 +133,13 @@ const Header: React.FC = () => {
               }}
               onClick={() => navigate('/home')}
             />
-          </BottomNavigation>
-          <Outlet />
+          </BottomNavigation></div>
+          <div>
+          <Profile></Profile>          
+       </div>
         </nav>
       </header>
+          <Outlet />
     </>
   );
 };
