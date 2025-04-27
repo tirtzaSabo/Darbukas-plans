@@ -8,44 +8,28 @@ import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Axios from '../../services/axios';
-import config from "../../config";
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 
-// const defaultTheme = createTheme();
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../services/auth.provider';
+import { userService } from '../../services/user.service';
+
 
 const SignIn: React.FC = () => {
     const nav = useNavigate();
-
+    const { login } = useAuth();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const cookies = new Cookies();
         const email = data.get('email') as string;
         const password = data.get('password') as string;
 
         try {
-            const res = await Axios.post(`${config.api}/users/signin`, { email, password });
-
-            if (res.status === 200) {
-                const {email } = res.data;
-
-                if (!res.data) {
-                    alert('Email or password is incorrect');
-                    return;
-                }
-
-                // cookies.set('isAdmin', manager ? 'true' : 'false');
-                cookies.set('email', email);
-
-                // if (manager) {
-                //     nav('/admin');
-                // } else {
-                //     nav('/');
-                // }
+            const user = await userService.signin(password, email);
+            if (user) {
+                login(user);
+                nav('/');
             }
+
         } catch (error) {
             console.error('Error signing in:', error);
             alert('An error occurred during sign in. Please try again.');
@@ -54,7 +38,6 @@ const SignIn: React.FC = () => {
 
     return (
         <>
-         {/* <ThemeProvider theme={defaultTheme}> */}
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -66,9 +49,7 @@ const SignIn: React.FC = () => {
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }} />
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
+                    <Typography component="h1" variant="h5">התחברות</Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
@@ -91,11 +72,7 @@ const SignIn: React.FC = () => {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="זכור אותי"
-                        />
-                        <a href='/signup'>הרשם</a>
+                        <a href='/signup'>עדיין לא נרשמת? הרשם</a>
                         <Button
                             type="submit"
                             fullWidth
@@ -107,7 +84,6 @@ const SignIn: React.FC = () => {
                     </Box>
                 </Box>
             </Container>
-        {/* </ThemeProvider> */}
         </>
     );
 };

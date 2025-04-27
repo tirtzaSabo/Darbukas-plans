@@ -3,53 +3,28 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Axios from '../../services/axios';
-import config from "../../config";
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-
-// const defaultTheme = createTheme();
-
+import { useAuth } from '../../services/auth.provider';
+import { userService } from '../../services/user.service';
 const SignUp: React.FC = () => {
     const nav = useNavigate();
-
+    const { login } = useAuth();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const cookies = new Cookies();
         const name = data.get('name') as string;
         const password = data.get('password') as string;
         const phone = data.get('phone') as string;
         const email = data.get('email') as string;
         try {
-            const res = await Axios.post(`${config.api}/users/signup`, { name, password, phone, email });
-            console.log(res.status);
-
-            if (res.status === 200) {
-                console.log("200");
-
-                const { manager, name } = res.data;
-
-                if (!res.data) {
-                    alert('Name or password is incorrect');
-                    return;
-                }
-
-                cookies.set('isAdmin', manager ? 'true' : 'false');
-                cookies.set('name', name);
-
-                if (manager) {
-                    nav('/admin');
-                } else {
-                    nav('/');
-                }
-            }
+            const user = await userService.signup(name, password, phone, email);
+            if(user){
+                login(user);
+                nav('/');
+        }
         } catch (error) {
             console.error('Error signing in:', error);
         }
@@ -57,7 +32,6 @@ const SignUp: React.FC = () => {
 
     return (
         <>
-            {/* <ThemeProvider theme={defaultTheme}> */}
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -70,7 +44,7 @@ const SignUp: React.FC = () => {
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }} />
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        הרשמה
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -112,15 +86,9 @@ const SignUp: React.FC = () => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="זכור אותי"
-                        />
-                        <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I want to receive inspiration, marketing promotions and updates via email."
-                            />
+                        />   
+                        <a href='/signin'>התחבר</a>
+
                         <Button
                             type="submit"
                             fullWidth
@@ -132,7 +100,6 @@ const SignUp: React.FC = () => {
                     </Box>
                 </Box>
             </Container>
-            {/* </ThemeProvider> */}
         </>
     );
 };

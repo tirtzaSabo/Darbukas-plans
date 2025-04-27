@@ -1,28 +1,6 @@
-// const { Router } = require('express');
-// const app = Router();
-// const fs = require('fs').promises;
-// const bcryptjs = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-// const { User } = require('../models/user');
-// const userModel = require('../models/userModel');
-// const userService = require('../services/user.service')
-
-// let Users = async function () {
-
-
-//     app.post("/signup", async (req, res) => { userService.addUser(req, res) })
-
-//     app.post("/signin", async (req, res) => {
-//         userService.signin(req, res)
-//     });
-//     app.get("/", async (req, res) => {
-//         userService.getAllUsers(req, res)
-//     });
-// }
 const User = require('../models/user.model');
 const userService = require('../services/user.service');
 
-// Controller methods for User CRUD operations
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await userService.getAllUsers();
@@ -46,22 +24,37 @@ exports.getUserById = async (req, res) => {
 
 exports.signup = async (req, res) => {
   try {
-    console.log('Signup request body:', req.body); // בדיקת גוף הבקשה
-    const newUser = await userService.signup(req,res);
+    const newUser = await userService.signup(req, res);
     res.status(201).json(newUser);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: err.message});
   }
 };
 exports.signin = async (req, res) => {
   try {
-    const newUser = await userService.signin(req,res);
+    const newUser = await userService.signin(req, res);
     res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
+exports.logout = async (req, res) => {
+  try {
+    await userService.logout(req, res);
+  } catch (err) {
+    console.log(err);
 
+  }
+};
+exports.getUserFromToken = async (req, res) => {
+  try {
+    await userService.getUserFromToken(req, res);
+
+  } catch (error) {
+    console.log(error);
+
+  }
+}
 exports.updateUser = async (req, res) => {
   try {
     const updatedUser = await userService.updateUser(req.params.id, req.body);
