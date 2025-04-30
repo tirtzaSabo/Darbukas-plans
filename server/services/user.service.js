@@ -28,7 +28,7 @@ exports.signup = async (req, res) => {
         // });
         res.status(201).json(user);            
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 
 }
@@ -60,8 +60,7 @@ exports.signin = async (req, res) => {
         else
             res.status(400).send("Invalid Credentials");
     } catch (err) {
-
-        console.log(err);
+        console.error(err);
     }
 }
 exports.logout = async (req, res) => {
@@ -72,25 +71,22 @@ exports.logout = async (req, res) => {
         });
         res.status(200).send("Logged out");
     } catch (error) {
-        console.log(error);
-        
+        console.error(error); 
     }
 }
-exports.getUserFromToken= async (req, res) => {  
-    const token = req.cookies.token||req.body.token || req.query.token || req.headers["x-access-token"];
-    if (!token) {
-      return res.status(401).json({ message: 'No token provided' });
+exports.getUserFromToken= async (req, res) => {    
+    if (req.cookies.token||req.body.token || req.query.token || req.headers["x-access-token"]) {
+        try {
+            const decoded = jwt.verify(req.cookies.token||req.body.token || req.query.token || req.headers["x-access-token"]," "+process.env.TOKEN_KEY);          
+            const user =await this.getUserById(decoded.user_id);        
+          return res.status(200).json({ user });
+        } catch (err) {
+            console.error(err);
+            
+          return res.status(401).json({ message: 'Invalid token' });
+        }}
+        return res.status(401).json({ message: 'No token provided' });
     }
-    
-    try {
-      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      const user = getUserByEmail(decoded.email); 
-      const { token, ...userWithoutToken } = user.toObject();
-      return res.status(200).json({ userWithoutToken });
-    } catch (err) {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
-  }
 exports.getAllUsers = async () => {
     return await userModel.find();
 };

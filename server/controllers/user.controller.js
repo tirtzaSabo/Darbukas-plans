@@ -42,16 +42,15 @@ exports.logout = async (req, res) => {
   try {
     await userService.logout(req, res);
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
   }
 };
 exports.getUserFromToken = async (req, res) => {
-  try {
+  try {  
     await userService.getUserFromToken(req, res);
-
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
   }
 }

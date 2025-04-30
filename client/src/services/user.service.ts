@@ -22,7 +22,6 @@ export class UserService {
       if (!res.data) {
         alert("Name or password is incorrect");
       }
-      console.log("signup was successful");
       return res.data;
     } catch (error) {
       console.error("Error signup:", error);
@@ -37,8 +36,6 @@ export class UserService {
         withCredentials: true,
       });
       if (res.status === 200) {
-        console.log(res.data);
-
         if (!res.data) {
           alert("Name or password is incorrect");
         }
@@ -51,13 +48,11 @@ export class UserService {
     }
   }
   async getStoredUser(token:string): Promise<User> {
-    try {
-      const res = await Axios.post(`${config.api}/users/bytoken`, {token},{
-        withCredentials: true,
-      });      
+    try {      
+      const res = await Axios.post(`${config.api}/users/bytoken`, {token},);
       if (res.status === 200) {
         if (res.data) {
-          return res.data;
+          return await res.data.user;
         }
       }
       throw new Error(`Unexpected status code: ${res.status}`);
@@ -73,9 +68,7 @@ export class UserService {
       });
       if (res.status != 200) {
         throw new Error(`Unexpected status code: ${res.status}`);
-      }
-      console.log(res);
-      
+      }      
     } catch (error) {
       console.error("Error logout:", error);
       throw error;
