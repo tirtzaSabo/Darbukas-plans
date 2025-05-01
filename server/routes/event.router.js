@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const eventController = require('../controllers/event.controller');
-
-// Routes for Event CRUD operations
 router.get('/', eventController.getAllEvents);
 router.get('/:id', eventController.getEventById);
 router.post('/', eventController.createEvent);

@@ -1,6 +1,4 @@
 const Event = require('../models/event.model');
-
-// Service methods for Event CRUD operations
 exports.getAllEvents = async () => {
   return await Event.find().populate('service').populate('user');
 };

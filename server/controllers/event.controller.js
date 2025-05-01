@@ -1,6 +1,4 @@
 const eventService = require('../services/event.service');
-
-// Controller methods for Event CRUD operations
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await eventService.getAllEvents();
@@ -24,7 +22,7 @@ exports.getEventById = async (req, res) => {
 
 exports.createEvent = async (req, res) => {
   try {
-    const newEvent = await eventService.createEvent(req.body);
+    const newEvent = await eventService.createEvent(req.body.newEvent);
     res.status(201).json(newEvent);
   } catch (err) {
     res.status(400).json({ message: err.message });
