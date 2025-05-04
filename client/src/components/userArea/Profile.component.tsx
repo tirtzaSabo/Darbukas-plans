@@ -3,18 +3,16 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import Cookies from 'universal-cookie';
-
+import { useAuth } from '../../services/auth.provider';
+import { IconButton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 const Profile: React.FC = () => {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const cookies = new Cookies();
-  
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -22,24 +20,35 @@ const Profile: React.FC = () => {
     setAnchorEl(null);
   };
   const handleLogOut = () => {
-    cookies.remove('email');
+    logout();
     handleClose;
   };
+  const handleDetails = () => {
+    navigate('/userdetails');
+  }
+
   return (
     <React.Fragment>
-        <Tooltip title="Account settings">
-          <button
+      <Tooltip title="הגדרות חשבון">
+        {/* <button
             onClick={handleClick}
-            // size="small"
-            // sx={{ ml: 2 }}
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
-          >
-            {/* <Avatar sx={{ width: 32, height: 32 }}>שלום</Avatar> */}
-            hello {cookies.get('email')}
-          </button>
-        </Tooltip>
+          > */}
+        {/* <Avatar sx={{ width: 32, height: 32 }}>שלום</Avatar> */}
+        {/* <ExpandMoreIcon></ExpandMoreIcon> שלום {user?.name} 
+          </button> */}
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          sx={{ ml: 2 }}
+          aria-controls={open ? 'account-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        ><Avatar sx={{ width: 45, height: 45 }}>{user?.name.charAt(0)}</Avatar>
+        </IconButton>
+      </Tooltip>
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -77,30 +86,14 @@ const Profile: React.FC = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
+        <MenuItem onClick={handleDetails}>
+          <Avatar />פרטים
         </MenuItem>
         <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          התנתק
         </MenuItem>
       </Menu>
     </React.Fragment>

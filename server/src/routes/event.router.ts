@@ -1,12 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const eventController = require('../controllers/event.controller');
-
-// Routes for Event CRUD operations
+import * as eventController from '../controllers/event.controller';
 router.get('/', eventController.getAllEvents);
 router.get('/:id', eventController.getEventById);
 router.post('/', eventController.createEvent);
 router.put('/:id', eventController.updateEvent);
 router.delete('/:id', eventController.deleteEvent);
 
-module.exports = router;
+export default router;
