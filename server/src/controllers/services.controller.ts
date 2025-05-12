@@ -24,8 +24,6 @@ export const getServiceById = async (req: Request, res: Response): Promise<void>
 };
 
 export const createService = async (req: Request, res: Response): Promise<void> => {
-  console.log("con createEvent");
-  
   try {
     const newService = await serviceService.createService(req.body);
     res.status(201).json(newService);

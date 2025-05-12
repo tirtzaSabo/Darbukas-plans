@@ -4,7 +4,6 @@ import { swaggerUi, specs } from './swaggerConfig';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import verifyToken from './src/middlewears/auth.middlewear';
 import userRoutes from './src/routes/user.router';
 import serviceRoutes from './src/routes/service.router';
 import businessRoutes from './src/routes/business.router';
@@ -22,7 +21,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/users', userRoutes);
-app.use(verifyToken);
 app.use('/services', serviceRoutes);
 app.use('/business', businessRoutes);
 app.use('/events', eventRoutes);

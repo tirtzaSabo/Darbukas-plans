@@ -52,7 +52,6 @@ const MakeOrder: React.FC = () => {
             const arr: string[] = [];
             try {
                 const services = await api.get(`${config.api}/service?business_id=1`);
-                console.log(services + "hello");
                 if (services) {
                     services.data.forEach((i: { type: string }) => {
                         arr.push(i.type);
@@ -70,7 +69,6 @@ const MakeOrder: React.FC = () => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         console.log("Form Data:", Object.fromEntries(formData.entries()));
-        // שליפת ערכים מהטופס (שדות שנשלחים על ידי TextField)
         const service = formData.get('service') as string;
         const age = formData.get('age') as string;
         const numOfParticipantsStr = formData.get('NumofParticipants');
@@ -93,8 +91,6 @@ const MakeOrder: React.FC = () => {
         };
 
         try {
-            console.log(newEvent);
-            
             const event = await eventService.createEvent(newEvent,user?.token);
             console.log(event);
 

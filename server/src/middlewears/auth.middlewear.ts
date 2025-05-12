@@ -16,11 +16,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 const TOKEN_KEY = process.env.TOKEN_KEY || 'defaultSecretKey';
 
-const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
-
-  console.log(
-    req.body) 
-
+export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   if (!(req.body.token || req.query.token || req.headers["x-access-token"])) {
      res.status(403).send("A token is required for authentication");
      return;
@@ -39,4 +35,3 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   return next();
 };
 
-export default verifyToken;
