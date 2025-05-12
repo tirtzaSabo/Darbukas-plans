@@ -94,11 +94,12 @@
 import express from 'express';
 const router = express.Router();
 import * as businessController from '../controllers/business.controller';
+import { verifyToken } from '../middlewears/auth.middlewear';
 
-router.get('/', businessController.getAllBusinesses);
-router.get('/:id', businessController.getBusinessById);
-router.post('/', businessController.createBusiness);
-router.put('/:id', businessController.updateBusiness);
-router.delete('/:id', businessController.deleteBusiness);
+router.get('/',verifyToken, businessController.getAllBusinesses);
+router.get('/:id',verifyToken, businessController.getBusinessById);
+router.post('/',verifyToken, businessController.createBusiness);
+router.put('/:id',verifyToken, businessController.updateBusiness);
+router.delete('/:id',verifyToken, businessController.deleteBusiness);
 
 export default router;
