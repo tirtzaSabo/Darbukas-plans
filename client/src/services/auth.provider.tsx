@@ -30,17 +30,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   //     console.error("Error fetching user:", error);
   //   }
   // }
-  async function fetchUser() {
-    try {
-       const storedUser =//cookies.get("user")
-      await userService.getStoredUser(cookies.get("token"));
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  }
+  // async function fetchUser() {
+  //   try {
+  //      const storedUser =//cookies.get("user")
+  //     await userService.getStoredUser(cookies.get("token"));
+  //     if (storedUser) {
+  //       setUser(storedUser);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user:", error);
+  //   }
+  // }
   // useEffect( () => {    
   //   const token = cookies.get('token');
   //   if (token) {
