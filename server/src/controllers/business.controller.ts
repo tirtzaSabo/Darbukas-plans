@@ -25,7 +25,7 @@ export const getBusinessById = async (req: Request, res: Response): Promise<void
 
 export const createBusiness = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newBusiness = await businessService.createBusiness(req.body);
+    const newBusiness = await businessService.createBusiness(req.body.newBusiness);
     res.status(201).json(newBusiness);
   } catch (err: any) {
     res.status(400).json({ message: err.message });
@@ -34,7 +34,7 @@ export const createBusiness = async (req: Request, res: Response): Promise<void>
 
 export const updateBusiness = async (req: Request, res: Response): Promise<void> => {
   try {
-    const updatedBusiness = await businessService.updateBusiness(req.params.id, req.body);
+    const updatedBusiness = await businessService.updateBusiness(req.params.id, req.body.newBusiness);
     if (!updatedBusiness) {
       res.status(404).json({ message: 'Business not found' });
       return;
