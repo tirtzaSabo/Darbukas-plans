@@ -1,6 +1,8 @@
 import { User } from "../models/user.model";
 import Axios from "./axios";
 import config from "../config";
+import {jwtDecode} from 'jwt-decode';
+
 export class UserService {
   async signup(
     name: string,
@@ -14,7 +16,6 @@ export class UserService {
         password,
         phone,
         email,
-        withCredentials: true,
       });
       if (res.status != 201) {
         throw new Error(`Unexpected status code: ${res.status}`); 
@@ -33,7 +34,6 @@ export class UserService {
       const res = await Axios.post(`${config.api}/users/signin`, {
         email,
         password,
-        withCredentials: true,
       });
       if (res.status === 200) {
         if (!res.data) {
@@ -49,7 +49,11 @@ export class UserService {
   }
   async getStoredUser(token:string): Promise<User> {
     try {      
-      const res = await Axios.post(`${config.api}/users/bytoken`, {token},);
+      const res = await Axios.post(`${config.api}/users/bytoken`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });;
       if (res.status === 200) {
         if (res.data) {
           return await res.data.user;
@@ -61,18 +65,73 @@ export class UserService {
       throw error;
     }
   }
-  async logout() {
+  
+    async getAllUsers(token:string|undefined): Promise<User[]> {
     try {
-      const res = await Axios.post(`${config.api}/users/logout`, {
-        withCredentials: true,
-      });
-      if (res.status != 200) {
-        throw new Error(`Unexpected status code: ${res.status}`);
-      }      
+      const res = await Axios.get(`${config.api}/users/`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+      if (res.status === 200) {
+        return res.data;
+      }
+      throw new Error(`Unexpected status code: ${res.status}`);
     } catch (error) {
-      console.error("Error logout:", error);
+      console.error("Error getting all events:", error);
       throw error;
+    }}
+     async deleteUser(id:string,token:string|undefined): Promise<User[]> {
+    try {
+      const res = await Axios.delete(`${config.api}/users/${id}`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+      if (res.status === 200) {
+        return res.data;
+      }
+      throw new Error(`Unexpected status code: ${res.status}`);
+    } catch (error) {
+      console.error("Error getting all events:", error);
+      throw error;
+    }}
+    async updateUser(id: string, newUser: Partial<User>, token: string | undefined): Promise<User[]> {
+      console.log(id);
+      
+    try {
+      const res = await Axios.put(`${config.api}/users/${id}`,{newUser}, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+      if (res.status === 200) {
+        return res.data;
+      }
+      throw new Error(`Unexpected status code: ${res.status}`);
+    } catch (error) {
+      console.error("Error update user:", error);
+      throw error;
+    }}
+     decodeToken (token: string) {
+      try {
+        return jwtDecode(token); // פענוח הטוקן
+      } catch (error) {
+        console.error('Invalid token:', error);
+        return null;
+      }
+    
+    
+    }
+      isTokenValid (token: string): boolean{
+    try {
+      const decoded: { exp: number } = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000); // זמן נוכחי בשניות
+      return decoded.exp > currentTime; // בדיקת תוקף
+    } catch {
+      return false;
     }
   }
-}
+  }
+
 export const userService = new UserService();

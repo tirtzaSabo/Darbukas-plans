@@ -5,9 +5,8 @@ import { userService } from './user.service';
 
 const cookies = new Cookies();
 
-
 interface AuthContextProps {
-  user: User | null;
+  user: Partial<any> | null;
   login: (userData: User) => void;
   logout: () => void;
 }
@@ -19,63 +18,29 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  // async function fetchUser() {
-  //   try {
-  //     const storedUser = await userService.getStoredUser();
-  //     if (storedUser) {
-  //       setUser(storedUser);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching user:", error);
-  //   }
-  // }
-  // async function fetchUser() {
-  //   try {
-  //      const storedUser =//cookies.get("user")
-  //     await userService.getStoredUser(cookies.get("token"));
-  //     if (storedUser) {
-  //       setUser(storedUser);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching user:", error);
-  //   }
-  // }
-  // useEffect( () => {    
-  //   const token = cookies.get('token');
-  //   if (token) {
-  //     userService.getStoredUser(token).then((userData) => {
-  //           if (userData) setUser(userData);
-  //           else cookies.remove('token'); // הסר טוקן לא תקין
-  //       });
-  //   }  }, []);
-  useEffect(() => {
-    const checkTokenAndFetchUser = async () => {
-        const token = cookies.get('token');
-        if (token) {
-            try {
-                const userData = await userService.getStoredUser(token);
-                if (userData) {
-                    setUser(userData);
-                } else {
-                    cookies.remove('token'); // הסר טוקן לא תקין
-                }
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-            }
-        }
-    };
+  const [user, setUser] = useState<Partial<any> | null>(null);
 
-    checkTokenAndFetchUser();
-}, []);
+  useEffect(() => {
+    const token = cookies.get('token');
+    if (token) {
+      const decodedUser = userService.decodeToken(token); // פענוח הטוקן
+      const isTokenValid = userService.isTokenValid(token); // בדיקת תוקף הטוקן
+      if (decodedUser && isTokenValid) {
+        setUser(decodedUser);
+      } else {
+        cookies.remove('token'); // מחיקת הטוקן אם אינו תקף
+        setUser(null);
+      }
+    }
+  }, []);
 
   const login = (userData: User) => {
-    cookies.set("token",userData.token)
+    cookies.set('token', userData.token);
     setUser(userData);
   };
 
   const logout = () => {
-    cookies.remove("token");
+    cookies.remove('token');
     setUser(null);
   };
 
