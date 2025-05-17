@@ -8,9 +8,14 @@ interface ProtectedRouteProps {
   routeFor: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,routeFor }) => {
-  const {user}=useAuth();
-  const userRole=user?.role;
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles, routeFor }) => {
+  const { user } = useAuth();
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>; // הצג מצב טעינה
+  // }
+
+  const userRole = user?.role;
 
   if (!userRole || !allowedRoles.includes(userRole)) {
     return <Navigate to={`/${routeFor}`} />;
@@ -20,4 +25,3 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles,
 };
 
 export default ProtectedRoute;
-
