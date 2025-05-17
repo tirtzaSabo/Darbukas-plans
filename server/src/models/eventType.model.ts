@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IService extends Document {
+export interface IEventType extends Document {
   description: string;
 }
 
-const ServiceModelSchema: Schema = new Schema({
+const EventTypeModelSchema: Schema = new Schema({
   description: {
     type: String,
     required: true,
@@ -12,7 +12,7 @@ const ServiceModelSchema: Schema = new Schema({
   },
 });
 
-export default mongoose.model<IService>("Service", ServiceModelSchema);
+export default mongoose.model<IEventType>("EventType", EventTypeModelSchema);
 
 
 

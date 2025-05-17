@@ -1,34 +1,34 @@
-import ServiceModel from '../models/service.model';
+import ServiceModel from '../models/eventType.model';
 import { Types } from 'mongoose';
 
-export interface IService {
+export interface IEventType {
   description: string;
 }
 
 
-export const getAllServices = async (): Promise<IService[]> => {
+export const getAllEventTypes = async (): Promise<IEventType[]> => {
   return await ServiceModel.find();
 };
 
-export const getServiceById = async (id: string): Promise<IService | null> => {
+export const getEventTypeById = async (id: string): Promise<IEventType | null> => {
   if (!Types.ObjectId.isValid(id)) return null;
   return await ServiceModel.findById(id);
 };
 
-export const createService = async (serviceData: IService): Promise<IService> => {
-  const newService = new ServiceModel(serviceData);
+export const createEventType = async (eventTypeData: IEventType): Promise<IEventType> => {
+  const newService = new ServiceModel(eventTypeData);
   return await newService.save();
 };
 
-export const updateService = async (
+export const updateEventType = async (
   id: string,
-  serviceData: Partial<IService>
-): Promise<IService | null> => {
+  eventTypeData: Partial<IEventType>
+): Promise<IEventType | null> => { 
   if (!Types.ObjectId.isValid(id)) return null;
-  return await ServiceModel.findByIdAndUpdate(id, serviceData, { new: true });
+  return await ServiceModel.findByIdAndUpdate(id, eventTypeData, { new: true });
 };
 
-export const deleteService = async (id: string): Promise<IService | null> => {
+export const deleteEventType = async (id: string): Promise<IEventType | null> => {
   if (!Types.ObjectId.isValid(id)) return null;
   return await ServiceModel.findByIdAndDelete(id);
 };
