@@ -4,7 +4,7 @@ import * as eventService from '../services/event.service';
 export const getAllEvents = async (req: Request, res: Response): Promise<void> => {
   try {
     const events = await eventService.getAllEvents();
-    res.status(200).json(events);
+    res.status(200).json(events);    
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
@@ -34,7 +34,7 @@ export const createEvent = async (req: Request, res: Response): Promise<void> =>
 
 export const updateEvent = async (req: Request, res: Response): Promise<void> => {
   try {
-    const updatedEvent = await eventService.updateEvent(req.params.id, req.body);
+    const updatedEvent = await eventService.updateEvent(req.params.id, req.body.newEvent);
     if (!updatedEvent) {
       res.status(404).json({ message: 'Event not found' });
       return;
