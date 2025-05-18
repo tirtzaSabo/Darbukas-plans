@@ -10,7 +10,7 @@ export interface IEvent extends Document {
     | "נשים"
     | "גיל הזהב"
     | "רב גילאי";
-  NumofParticipants?: number;
+  numofParticipants?: number;
   date?: Date;
   place?: string;
   service?: string;
@@ -40,7 +40,7 @@ const EventSchema: Schema = new Schema({
       "רב גילאי",
     ],
   },
-  NumofParticipants: { type: Number },
+  numofParticipants: { type: Number},
   date: { type: Date },
   place: { type: String },
   service: { type: String },
@@ -65,32 +65,3 @@ export default mongoose.model<IEvent>("Event", EventSchema);
 
 
 
-// const mongoose = require("./db.model")
-// const Schema = mongoose.Schema;
-// const EventModelSchema = new Schema({
-//     age: {
-//         type: String,
-//         enum: [
-//             'גנים',
-//             'א-ד',
-//             'ה-ח',
-//             'תיכון',
-//             'סמינר',
-//             'נשים',
-//             'גיל הזהב',
-//             'רב גילאי'
-//         ]
-//     },
-//     NumofParticipants: Number,
-//     date: Date,
-//     place: String,
-//     service: String,
-//     user: { type: Schema.Types.ObjectId, ref: 'User' },
-//     duration: Number,
-//     description: String,
-//     status: {
-//         type: String,
-//         enum: ['PENDING', 'APPROVED_MANAGER', 'APPROVED_CLIENT', 'CANCELLED_MANAGER', 'CANCELLED_CLIENT', 'COMPLETED']
-//     }
-// });
-// module.exports = mongoose.model("Event", EventModelSchema);

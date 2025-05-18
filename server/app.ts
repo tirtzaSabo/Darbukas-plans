@@ -4,9 +4,8 @@ import { swaggerUi, specs } from './swaggerConfig';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import verifyToken from './src/middlewears/auth.middlewear';
 import userRoutes from './src/routes/user.router';
-import serviceRoutes from './src/routes/service.router';
+import EventTypeRoutes from './src/routes/EventType.router';
 import businessRoutes from './src/routes/business.router';
 import eventRoutes from './src/routes/event.router';
 import connectDB from './src/models/db.model';
@@ -16,14 +15,13 @@ app.use(express.json());
 connectDB();
 app.use(cookieParser());
 const corsOptions = {
-    origin: 'http://127.0.0.1:5173',
+    origin: ['http://127.0.0.1:5173','http://localhost:5173'],
     credentials: true,
 };
 app.use(cors(corsOptions));
 app.use('/api', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/users', userRoutes);
-app.use(verifyToken);
-app.use('/services', serviceRoutes);
+app.use('/event-types', EventTypeRoutes);
 app.use('/business', businessRoutes);
 app.use('/events', eventRoutes);
 

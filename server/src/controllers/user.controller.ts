@@ -112,7 +112,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const signin = async (req: Request, res: Response): Promise<void> => {
-  try {
+  try { 
     const user = await userService.signin(req, res);
     res.status(201).json(user);
   } catch (err: any) {
@@ -142,7 +142,7 @@ export const getUserFromToken = async (req: Request, res: Response): Promise<voi
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const updatedUser = await userService.updateUser(req.params.id, req.body);
+    const updatedUser = await userService.updateUser(req.params.id, req.body.newUser);
     if (!updatedUser) {
       res.status(404).json({ message: 'User not found' });
       return;

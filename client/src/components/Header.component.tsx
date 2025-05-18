@@ -1,15 +1,17 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import '../../App.css';
+import '../App.css';
 import React from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import UserMenu from './UserMenu.component';
+import UserMenu from './userArea/UserMenu.component';
 import Box from '@mui/material/Box';
+import { useAuth } from '../services/auth.provider';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+const {user}=useAuth();
+const userRole=user?.role;
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -62,7 +64,15 @@ const Header: React.FC = () => {
                     color: isActive('/home') ? '#1976d2' : 'gray',
                   }}
                   onClick={() => navigate('/home')}
-                />
+                />      
+                {userRole === 'admin' &&
+                <BottomNavigationAction
+                  label="ניהול"
+                  style={{
+                    color: isActive('/admin') ? '#1976d2' : 'gray',
+                  }}
+                  onClick={() => navigate('/admin')}
+                />}
               </BottomNavigation>
             </Box>
             <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>

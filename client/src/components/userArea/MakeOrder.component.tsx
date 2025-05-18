@@ -1,29 +1,17 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AgeGroups from '../../models/ages.enum';
-
-import {
-    TextField,
-    MenuItem,
-    Button,
-    Typography,
-    Slider,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import config from '../../config';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { TextField, MenuItem, Button, Typography, Slider, Snackbar, Alert } from '@mui/material';
 import { eventService } from "../../services/event.service";
+import { eventTypeService } from "../../services/eventType.service";
 import { EventStatus } from '../../models/status.enum';
 import { Event1 } from '../../models/event.model';
 import { useAuth } from '../../services/auth.provider';
+import AgeGroups from '../../models/ages.enum';
 
 const marks = [
     { value: 0.5, label: 'חצי שעה' },
@@ -33,44 +21,40 @@ const marks = [
     { value: 2.5, label: '2.5' },
     { value: 3, label: '3' },
 ];
+
 const defaultTheme = createTheme();
+
 const MakeOrder: React.FC = () => {
     const { user } = useAuth();
+
     const [duration, setDuration] = useState<number>(1);
+    const [eventTypes, setEventTypes] = useState<string[]>([]);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error'; }>({ open: false, message: '', severity: 'success' });
+
     const handleSliderChange = (event: any, newValue: number | number[]) => {
         if (typeof newValue === 'number') {
             setDuration(newValue);
         }
     };
-    // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    // const handleDateChange = (newValue: any) => {
-    //     setSelectedDate(newValue ? new Date(newValue) : null);
-    // };
+
     useEffect(() => {
-        const fetchServices = async () => {
-            const api = axios.create();
-            const arr: string[] = [];
+        const fetchEventTypes = async () => {
             try {
-                const services = await api.get(`${config.api}/service?business_id=1`);
-                console.log(services + "hello");
+                const services = await eventTypeService.getAllEventTypes(user!.token);
                 if (services) {
-                    services.data.forEach((i: { type: string }) => {
-                        arr.push(i.type);
-                    });
+                    setEventTypes(services.map(service => service.description));
                 }
-                // setMeetType(arr);
             } catch (error) {
-                console.error("Error fetching services:", error);
+                console.error("Error fetching event types:", error);
             }
         };
-        fetchServices();
-    }, []);
+
+        fetchEventTypes();
+    }, [user]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        console.log("Form Data:", Object.fromEntries(formData.entries()));
-        // שליפת ערכים מהטופס (שדות שנשלחים על ידי TextField)
         const service = formData.get('service') as string;
         const age = formData.get('age') as string;
         const numOfParticipantsStr = formData.get('NumofParticipants');
@@ -80,26 +64,29 @@ const MakeOrder: React.FC = () => {
 
         const numOfParticipants = Number(numOfParticipantsStr);
         const durationInMinutes = duration * 60;
+
         const newEvent: Event1 = {
             age: age as AgeGroups,
             numOfParticipants,
             date: date,
             place,
             service,
-            user:user!._id,
+            user: user!._id,
             duration: durationInMinutes,
             description,
             status: EventStatus.PENDING,
         };
 
         try {
-            console.log(newEvent);
-            
-            const event = await eventService.createEvent(newEvent,user?.token);
-            console.log(event);
-
-        } catch (error) {
+            await eventService.createEvent(newEvent, user?.token);
+            setSnackbar({ open: true, message: 'אירוע נוצר בהצלחה!', severity: 'success' });
+        } catch (error: any) {
             console.error("Failed to create event:", error);
+            if (error.response?.data?.message === 'Date is already taken') {
+                setSnackbar({ open: true, message: 'התאריך תפוס, נסה תאריך אחר.', severity: 'error' });
+            } else {
+                setSnackbar({ open: true, message: 'אירעה שגיאה ביצירת האירוע.', severity: 'error' });
+            }
         }
     };
 
@@ -130,12 +117,11 @@ const MakeOrder: React.FC = () => {
                             margin="normal"
                             variant="outlined"
                         >
-                            <MenuItem key={'in'} value={'פנים'}>
-                                {'פנים'}
-                            </MenuItem>
-                            <MenuItem key={'out'} value={'חוץ'}>
-                                {'חוץ'}
-                            </MenuItem>
+                            {eventTypes.map((type, index) => (
+                                <MenuItem key={index} value={type}>
+                                    {type}
+                                </MenuItem>
+                            ))}
                         </TextField>
 
                         <TextField
@@ -182,35 +168,13 @@ const MakeOrder: React.FC = () => {
                             marks={marks}
                             onChange={handleSliderChange}
                         />
-                        {/* <TextField
-                            label="כמה זמן?"
-                            name="duration"
-                            type="range"
-                            inputProps={{
-                                step: 30,
-                                min: 30,
-                                max:180,
-                                defaultValue: 50
-                            }}
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                        /> */}
-                        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker
-                                label="בחר תאריך ושעה"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                            // renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-                            />
-                        </LocalizationProvider> */}
                         <TextField
                             label="...ספרי לנו עוד"
                             name="description"
                             fullWidth
                         />
                         <TextField
-                        type='datetime-local'
+                            type='datetime-local'
                             name="date"
                             fullWidth
                         />
@@ -223,6 +187,15 @@ const MakeOrder: React.FC = () => {
                         </Button>
                     </Box>
                 </Box>
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={6000}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                >
+                    <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
             </Container>
         </ThemeProvider>
     );

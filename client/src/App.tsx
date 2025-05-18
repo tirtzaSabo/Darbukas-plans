@@ -1,4 +1,4 @@
-import Header from './components/userArea/Header.component';
+import Header from './components/Header.component';
 function App() {
   return (
     <div className="App">
